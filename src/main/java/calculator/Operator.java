@@ -21,27 +21,25 @@ public enum Operator {
         this.expression = expression;
     }
 
-    private String getSymbol() {
-        return this.symbol;
-    }
-
-    public static Operator find(String operator) {
-        return Arrays.stream(Operator.values())
-                .filter(op -> op.getSymbol().equals(operator))
-                .findFirst()
-                .get();
-    }
-
     public double calculate(double left, double right) {
         return expression.apply(left, right);
     }
 
-    public static boolean isRightOperator(String operator) {
+    public static Operator find(String operator) {
         return Arrays.stream(Operator.values())
-                .anyMatch(op -> op.getSymbol().equals(operator));
+                .filter(op -> op.symbol.equals(operator))
+                .findFirst()
+                .get();
+    }
+
+    public static void throwExceptionWhenInputIsNotSymbol(String input) {
+        Arrays.stream(Operator.values())
+                .filter(op -> op.symbol.equals(input))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public static boolean isDivisionOperator(String operator) {
-        return "/".equals(operator);
+        return Constant.DIVISION_SYMBOL.equals(operator);
     }
 }

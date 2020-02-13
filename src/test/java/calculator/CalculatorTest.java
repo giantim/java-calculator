@@ -6,59 +6,58 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CalculatorTest {
-    private Calculator calculator;
-    private ValidityInspector validityInspector;
+    private List<String> expression;
 
     @BeforeEach
     public void setUp() {
-        calculator = new Calculator();
-        validityInspector = new ValidityInspector();
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {" ", ""})
-    public void checkUserInputIsBlankOrEmptyTest(String input) {
-        Assertions.assertThatThrownBy(() -> {
-            validityInspector.checkUserInputIsBlankOrEmpty(input);
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("공백 또는 빈 문자열을 입력하셨습니다.");
+        expression = new ArrayList<>();
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"        ", "q + w + e", "1+2+3", "+ + 2", "1 abcd 2", "2 * 65 / 0", "2 + 3/", "/1 + 55", "1 + a3"})
-    public void checkCanConvertUserInputToNumberAndOperatorTest(String input) {
-        String[] splitData = input.split(Constant.BLANK);
+    public void expressionConstructorTest(String input) {
         Assertions.assertThatThrownBy(() -> {
-            validityInspector.checkCanConvertUserInputToNumberAndOperator(splitData);
+            Expression expression = new Expression(input);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void addTest() {
-        String[] numericalExpression = {"1", "+", "2"};
-        Double result = calculator.calculate(numericalExpression);
+        expression.add("1");
+        expression.add("+");
+        expression.add("2");
+        Double result = Calculator.calculate(expression);
         Assertions.assertThat(result).isEqualTo(3);
     }
 
     @Test
     public void subtractTest() {
-        String[] numericalExpression = {"1", "-", "2"};
-        Double result = calculator.calculate(numericalExpression);
+        expression.add("1");
+        expression.add("-");
+        expression.add("2");
+        Double result = Calculator.calculate(expression);
         Assertions.assertThat(result).isEqualTo(-1);
     }
 
     @Test
     public void multipleTest() {
-        String[] numericalExpression = {"1", "*", "2"};
-        Double result = calculator.calculate(numericalExpression);
+        expression.add("1");
+        expression.add("*");
+        expression.add("2");
+        Double result = Calculator.calculate(expression);
         Assertions.assertThat(result).isEqualTo(2);
     }
 
     @Test
     public void divideTest() {
-        String[] numericalExpression = {"1", "/", "2"};
-        Double result = calculator.calculate(numericalExpression);
+        expression.add("1");
+        expression.add("/");
+        expression.add("2");
+        Double result = Calculator.calculate(expression);
         Assertions.assertThat(result).isEqualTo(0.5d);
     }
 }

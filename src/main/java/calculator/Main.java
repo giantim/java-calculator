@@ -1,17 +1,27 @@
 package calculator;
 
-public class Main {
-    public static void main(String[] args) {
-        UserInputScanner userInputScanner = new UserInputScanner();
-        Calculator calculator = new Calculator();
-        Output output = new Output();
+import java.util.Scanner;
 
+public class Main {
+    private static Scanner scanner = new Scanner(System.in);
+
+    private static void runCalculator() {
         try {
-            String[] splitString = userInputScanner.splitUserInputString();
-            double result = calculator.calculate(splitString);
-            output.printResult(result);
+            Expression expression = getExpression();
+            double result = Calculator.calculate(expression.getExpression());
+            Output.printResult(result);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            Output.printExceptionMessage(e.getMessage());
+            runCalculator();
         }
+    }
+
+    private static Expression getExpression() {
+        System.out.print("계산식을 입력하십시오: ");
+        return new Expression(scanner.nextLine());
+    }
+
+    public static void main(String[] args) {
+        runCalculator();
     }
 }
